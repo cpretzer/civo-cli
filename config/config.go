@@ -19,12 +19,13 @@ type Config struct {
 
 // Metadata describes the metadata for Civo's CLI
 type Metadata struct {
-	Admin              bool      `json:"admin"`
-	CurrentAPIKey      string    `json:"current_apikey"`
-	DefaultRegion      string    `json:"default_region"`
-	LatestReleaseCheck time.Time `json:"latest_release_check"`
-	URL                string    `json:"url"`
-	LastCmdExecuted    time.Time `json:"last_command_executed"`
+	Admin               bool      `json:"admin"`
+	CurrentAPIKey       string    `json:"current_apikey"`
+	DefaultRegion       string    `json:"default_region"`
+	LatestReleaseCheck  time.Time `json:"latest_release_check"`
+	URL                 string    `json:"url"`
+	LastCmdExecuted     time.Time `json:"last_command_executed"`
+	DisableReleaseCheck bool      `json:"disable_release_check"`
 }
 
 // Current contains the parsed ~/.civo.json file
@@ -96,7 +97,7 @@ func loadConfig(filename string) {
 		Current.Meta.CurrentAPIKey = "tempKey"
 	}
 
-	if time.Since(Current.Meta.LatestReleaseCheck) > (24 * time.Hour) {
+	if time.Since(Current.Meta.LatestReleaseCheck) > (24*time.Hour) || Current.Meta.DisableReleaseCheck {
 		Current.Meta.LatestReleaseCheck = time.Now()
 		dataBytes, err := json.Marshal(Current)
 		if err != nil {
